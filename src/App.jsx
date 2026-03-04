@@ -5,7 +5,9 @@ import DashboardView from './components/Dashboard/DashboardView';
 import CreditRiskView from './components/CreditRisk/CreditRiskView';
 import MarketRiskView from './components/MarketRisk/MarketRiskView';
 import LiquidityRiskView from './components/LiquidityRisk/LiquidityRiskView';
+import StressTestingView from './components/StressTesting/StressTestingView';
 import AgentsView from './components/Agents/AgentsView';
+import { StressTestProvider } from './contexts/StressTestContext';
 
 export default function App() {
   const [activeView, setActiveView] = useState('dashboard');
@@ -21,6 +23,8 @@ export default function App() {
         return <MarketRiskView />;
       case 'liquidity':
         return <LiquidityRiskView />;
+      case 'stress':
+        return <StressTestingView />;
       case 'agents':
         return <AgentsView />;
       default:
@@ -29,23 +33,25 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100">
-      <Sidebar
-        activeView={activeView}
-        onNavigate={setActiveView}
-        collapsed={sidebarCollapsed}
-        onToggle={() => setSidebarCollapsed(!sidebarCollapsed)}
-      />
-      <div
-        className={`transition-all duration-300 min-h-full ${
-          sidebarCollapsed ? 'ml-[68px]' : 'ml-[240px]'
-        }`}
-      >
-        <TopBar />
-        <main className="p-6">
-          {renderView()}
-        </main>
+    <StressTestProvider>
+      <div className="min-h-screen bg-slate-950 text-slate-100">
+        <Sidebar
+          activeView={activeView}
+          onNavigate={setActiveView}
+          collapsed={sidebarCollapsed}
+          onToggle={() => setSidebarCollapsed(!sidebarCollapsed)}
+        />
+        <div
+          className={`transition-all duration-300 min-h-full ${
+            sidebarCollapsed ? 'ml-[68px]' : 'ml-[240px]'
+          }`}
+        >
+          <TopBar />
+          <main className="p-6">
+            {renderView()}
+          </main>
+        </div>
       </div>
-    </div>
+    </StressTestProvider>
   );
 }

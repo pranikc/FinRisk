@@ -3,6 +3,7 @@ import {
   CreditCard,
   TrendingDown,
   Droplets,
+  Flame,
   Bot,
   Shield,
   ChevronLeft,
@@ -14,6 +15,7 @@ const navItems = [
   { id: 'credit', label: 'Credit Risk', icon: CreditCard },
   { id: 'market', label: 'Market Risk', icon: TrendingDown },
   { id: 'liquidity', label: 'Liquidity Risk', icon: Droplets },
+  { id: 'stress', label: 'Stress Testing', icon: Flame },
   { id: 'agents', label: 'AI Agents', icon: Bot },
 ];
 
