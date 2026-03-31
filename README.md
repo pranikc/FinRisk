@@ -16,6 +16,7 @@ FinRisk AI is a comprehensive risk monitoring platform for a simulated commercia
 - **Liquidity Risk** - LCR/NSFR regulatory ratios, cash flow ladder, HQLA composition, funding mix
 - **Stress Testing** - 9 historical/hypothetical/regulatory scenarios with 4 severity levels, Vasicek PD stress (Basel IRB), capital waterfall, tornado charts, survival horizon analysis, and scenario comparison
 - **AI Agents** - 6 specialized risk agents (Credit Sentinel, Market Watcher, Liquidity Monitor, Correlation Tracker, Stress Architect, Compliance Guardian)
+- **Responsive Shell** - Collapsible desktop navigation and a mobile drawer for smaller screens
 
 ## Tech Stack
 
@@ -30,6 +31,15 @@ FinRisk AI is a comprehensive risk monitoring platform for a simulated commercia
 ```bash
 npm install
 npm run dev
+```
+
+## Available Scripts
+
+```bash
+npm run dev
+npm run build
+npm run preview
+npm run lint
 ```
 
 ## Project Structure
@@ -53,5 +63,5 @@ src/
     scenarioEngine.js   # Orchestrates all stress computations
   data/
     syntheticData.js    # Synthetic bank portfolio data
-    stressScenarioLibrary.js  # 9 scenarios × 4 severities × 21 risk factors
+    stressScenarioLibrary.js  # 9 scenarios x 4 severities x 21 risk factors
 ```

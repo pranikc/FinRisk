@@ -1,26 +1,51 @@
-import { useState } from 'react';
-import { Bell, Search, Activity, Clock, Building2, AlertTriangle } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { Bell, Clock, Building2, Menu } from 'lucide-react';
 import { alerts, institution, getSeverityColor } from '../../data/syntheticData';
 
-export default function TopBar() {
+export default function TopBar({ onMenuClick, showMenuButton = false }) {
   const [showAlerts, setShowAlerts] = useState(false);
   const unacknowledged = alerts.filter((a) => !a.acknowledged);
 
+  useEffect(() => {
+    if (!showAlerts) {
+      return undefined;
+    }
+
+    const handleEscape = (event) => {
+      if (event.key === 'Escape') {
+        setShowAlerts(false);
+      }
+    };
+
+    window.addEventListener('keydown', handleEscape);
+    return () => window.removeEventListener('keydown', handleEscape);
+  }, [showAlerts]);
+
   return (
-    <header className="h-16 bg-slate-900/80 backdrop-blur-md border-b border-slate-700/50 flex items-center justify-between px-6 sticky top-0 z-30">
+    <header className="h-16 bg-slate-900/80 backdrop-blur-md border-b border-slate-700/50 flex items-center justify-between px-4 sm:px-6 sticky top-0 z-30">
       {/* Left: Institution Info */}
       <div className="flex items-center gap-4">
+        {showMenuButton && (
+          <button
+            type="button"
+            onClick={onMenuClick}
+            className="inline-flex items-center justify-center rounded-lg p-2 text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 transition-colors lg:hidden"
+            aria-label="Open navigation"
+          >
+            <Menu className="w-5 h-5" />
+          </button>
+        )}
         <div className="flex items-center gap-2 text-slate-300">
           <Building2 className="w-4 h-4 text-slate-500" />
-          <span className="text-sm font-medium">{institution.name}</span>
-          <span className="text-xs text-slate-500 border-l border-slate-700 pl-2 ml-1">{institution.regulatoryFramework}</span>
+          <span className="text-sm font-medium truncate max-w-[180px] sm:max-w-none">{institution.name}</span>
+          <span className="hidden md:inline text-xs text-slate-500 border-l border-slate-700 pl-2 ml-1">{institution.regulatoryFramework}</span>
         </div>
       </div>
 
       {/* Right: Actions */}
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-2 sm:gap-3">
         {/* Live Indicator */}
-        <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20">
+        <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20">
           <div className="relative w-2 h-2">
             <div className="absolute inset-0 rounded-full bg-emerald-500 animate-ping opacity-75" />
             <div className="relative w-2 h-2 rounded-full bg-emerald-500" />
@@ -37,8 +62,11 @@ export default function TopBar() {
         {/* Alerts */}
         <div className="relative">
           <button
+            type="button"
             onClick={() => setShowAlerts(!showAlerts)}
             className="relative p-2 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 transition-colors cursor-pointer"
+            aria-label="Toggle alerts panel"
+            aria-expanded={showAlerts}
           >
             <Bell className="w-5 h-5" />
             {unacknowledged.length > 0 && (
@@ -52,7 +80,7 @@ export default function TopBar() {
           {showAlerts && (
             <>
               <div className="fixed inset-0 z-40" onClick={() => setShowAlerts(false)} />
-              <div className="absolute right-0 top-12 w-96 bg-slate-800 border border-slate-700 rounded-xl shadow-2xl z-50 overflow-hidden">
+              <div className="absolute right-0 top-12 w-[min(24rem,calc(100vw-1rem))] sm:w-96 bg-slate-800 border border-slate-700 rounded-xl shadow-2xl z-50 overflow-hidden">
                 <div className="px-4 py-3 border-b border-slate-700 flex items-center justify-between">
                   <h3 className="text-sm font-semibold text-white">Active Alerts</h3>
                   <span className="text-xs text-slate-400">{unacknowledged.length} unacknowledged</span>
