@@ -1,4 +1,5 @@
-import { Columns3 } from 'lucide-react';
+import { useState } from 'react';
+import { ArrowDown, ArrowUp, Columns3 } from 'lucide-react';
 import { useStressTest } from '../../contexts/StressTestContext';
 import { formatCurrency } from '../../data/syntheticData';
 
@@ -8,16 +9,58 @@ const categoryBadge = {
   Hypothetical: 'bg-indigo-500/20 text-indigo-400',
 };
 
+const sortOptions = [
+  { id: 'stressedCET1', label: 'Lowest CET1' },
+  { id: 'totalPnLImpact', label: 'Largest P&L Loss' },
+  { id: 'eclIncrease', label: 'Largest ECL Increase' },
+  { id: 'stressedLCR', label: 'Lowest LCR' },
+  { id: 'survivalDays', label: 'Shortest Survival' },
+];
+
 export default function ScenarioComparison() {
   const { comparisonResults, severity, selectedScenarioId } = useStressTest();
+  const [sortBy, setSortBy] = useState('stressedCET1');
   if (!comparisonResults) return null;
+
+  const sortedResults = [...comparisonResults].sort((left, right) => {
+    if (sortBy === 'stressedCET1' || sortBy === 'stressedLCR' || sortBy === 'survivalDays') {
+      return left[sortBy] - right[sortBy];
+    }
+
+    return right[sortBy] - left[sortBy];
+  });
+
+  const worstScenario = sortedResults[0];
 
   return (
     <div className="glass-card rounded-xl p-5">
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex flex-col gap-4 mb-4 lg:flex-row lg:items-center lg:justify-between">
         <div className="flex items-center gap-2">
           <Columns3 className="w-4.5 h-4.5 text-indigo-400" />
           <h3 className="text-sm font-semibold text-white">Scenario Comparison ({severity.charAt(0).toUpperCase() + severity.slice(1)} Severity)</h3>
+        </div>
+        <div className="flex flex-wrap items-center gap-2">
+          {worstScenario && (
+            <div className="inline-flex items-center gap-2 rounded-lg border border-red-500/20 bg-red-500/10 px-3 py-2 text-xs">
+              <ArrowDown className="w-3.5 h-3.5 text-red-400" />
+              <span className="text-slate-300">Worst case:</span>
+              <span className="font-semibold text-red-300">{worstScenario.name}</span>
+            </div>
+          )}
+          <label className="inline-flex items-center gap-2 text-xs text-slate-400">
+            <span>Sort by</span>
+            <select
+              value={sortBy}
+              onChange={(event) => setSortBy(event.target.value)}
+              className="rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-xs text-slate-200 outline-none transition-colors focus:border-blue-400"
+            >
+              {sortOptions.map((option) => (
+                <option key={option.id} value={option.id}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+          </label>
         </div>
       </div>
       <div className="overflow-x-auto">
@@ -34,8 +77,9 @@ export default function ScenarioComparison() {
             </tr>
           </thead>
           <tbody>
-            {comparisonResults.map((row, i) => {
+            {sortedResults.map((row, i) => {
               const isSelected = row.id === selectedScenarioId;
+              const isWorst = worstScenario?.id === row.id;
               const cet1Breach = row.stressedCET1 < 4.5;
               const cet1Buffer = row.stressedCET1 < 7.0;
               const lcrBreach = row.stressedLCR < 100;
@@ -45,12 +89,17 @@ export default function ScenarioComparison() {
                 <tr
                   key={i}
                   className={`border-b border-slate-700/20 transition-colors ${
-                    isSelected ? 'bg-blue-500/10' : 'hover:bg-slate-800/40'
+                    isSelected
+                      ? 'bg-blue-500/10'
+                      : isWorst
+                        ? 'bg-red-500/5'
+                        : 'hover:bg-slate-800/40'
                   }`}
                 >
                   <td className="py-3 px-3">
                     <div className="flex items-center gap-2">
                       {isSelected && <div className="w-1.5 h-1.5 rounded-full bg-blue-400" />}
+                      {!isSelected && isWorst && <ArrowUp className="w-3.5 h-3.5 text-red-400 rotate-45" />}
                       <span className={`font-medium ${isSelected ? 'text-blue-300' : 'text-slate-200'}`}>{row.name}</span>
                     </div>
                   </td>
