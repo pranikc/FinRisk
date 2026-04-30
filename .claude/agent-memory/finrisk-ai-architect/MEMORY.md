@@ -1,0 +1,6 @@
+- [User role: Pranik, FinRisk founder](user_role.md) — prefers adversarial reality-checks, primary sources, structured reports; reads inline, not files
+- [FinRisk demo state](project_demo_state.md) — what's real (Vasicek, LCR math, scenario library) vs mocked (portfolio, alerts); prior research docs scope and lineage
+- [FinRisk pre-seed constraints](project_constraints.md) — US-only, $0 data budget, $25K Skyrun credits, Yale-student central banker, BYOC, advisory-first, Treasury/ALM in scope, no warm intros
+- [Conferences reference](reference_conferences.md) — ABA Risk & Compliance May 5-7 2026 Charlotte is top priority; RMA merged with BAI into ProSight 2024
+- [Regional bank M&A activity](reference_ma_activity.md) — Pinnacle+Synovus merging (treat as one target); target threshold-crossers, avoid mid-integration banks
+- [Round 4 consolidated decisions](project_round4_consolidated.md) — 6 open-question defaults locked 2026-04-23; Week-1 P0s (Delaware C-corp, ethics check, ABA register)
